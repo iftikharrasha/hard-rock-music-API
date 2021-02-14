@@ -8,6 +8,8 @@ const searchSongs = () => {
     fetch(url)
     .then(res => res.json()) 
     .then(value => displaySongs(value.data))  //renamed value because out api has the variable data, just to not get confused
+    // .catch(error => console.log(error));
+    .catch(error => displayError('Something went wrong!'));
 
     //.then(value => displaySongs(value))  //gives us the whole object
     //.then(value => displaySongs(value.data))  //gives us the array
@@ -16,6 +18,8 @@ const searchSongs = () => {
 
 const displaySongs = songs => {
     const songContainer = document.getElementById("song-container");
+
+    songContainer.innerHTML = ' '; //cleaning when we are searching again
     songs.forEach(song => {
         // console.log(song.title);
         // const li = document.createElement('li');
@@ -42,5 +46,37 @@ const displaySongs = songs => {
 
 
 const getLyric = (artist, title) => {
-    console.log(artist, title);
+    // console.log(artist, title);
+    const url = `https://api.lyrics.ovh/v1/${artist}/${title}`;
+    
+    fetch(url)
+    .then(res => res.json())
+    .then(data => displayLyrics(data.lyrics))
+    .catch(error => displayError('Something went wrong!'));
+        
+    // doing it with async-await
+    // const getLyric = async(artist, title) => {
+    //     const url = `https://api.lyrics.ovh/v1/${artist}/${title}`;
+
+    //     try{
+    //         const res = await fetch(url);
+    //         const data = await res.json();
+    //         displayLyrics(data.lyrics);
+
+    //     }catch(error){
+    //         displayError('Something went wrong!');
+    //     }
+    // }
 }
+
+const displayLyrics = lyrics => {
+    const lyricsDiv = document.getElementById("song-lyrics");
+    lyricsDiv.innerText = lyrics;
+
+}
+
+const displayError = error => {
+    const errorTag = document.getElementById('error-message');
+    errorTag.innerText = error;
+}
+
